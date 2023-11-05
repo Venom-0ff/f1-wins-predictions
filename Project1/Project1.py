@@ -1,3 +1,6 @@
+# Authors: Rami Abu Ahmad & Stepan Kostyukov
+# Date: November, 2023
+
 ###################################
 # Prepare and save a work dataset #
 ###################################
@@ -6,9 +9,6 @@ import pandas as pd
 races = pd.read_csv("data/races.csv")
 drivers = pd.read_csv("data/drivers.csv")
 driver_standings = pd.read_csv("data/driver_standings.csv")
-
-pd.set_option("display.max_columns", None)
-pd.set_option("display.width", None)
 
 # Join driver standings and drivers into single DataFrame
 df = pd.merge(driver_standings[["raceId", "driverId", "position", "wins"]], drivers[["driverId", "driverRef"]], on = "driverId", how = "left")
@@ -25,18 +25,18 @@ df = df[(df["position"] == 1) & (df["wins"] > 0)]
 df["year"] = df["date"].dt.year
 races_count = df.groupby("year")["raceId"].count()
 races_count = races_count.reset_index().rename(columns = {"raceId": "racesCount"})
-df = pd.merge(df, races_count)
 
 # Get only the results after the final race of the season
-df = df.groupby("year").last()
+final_races = df.groupby("year")["date"].max()
+final_races = final_races.reset_index()
 
-# print(df)
-# print(races_count)
-# print(df[["driverRef", "wins", "racesCount"]])
+df = df.merge(final_races["date"], left_on=df["date"], right_on = final_races["date"])
+df = pd.merge(df, races_count, on = "year", how = "left")
+df = df.sort_values(by="year")
 
 # Save the resulting DataFrame into a separate my_dataset.csv file for easier use later on
-df[["driverRef", "wins", "racesCount"]].to_csv("data/my_dataset.csv")
-print("DataFrame was saved into [data]/my_dataset.csv!")
+df[["year", "driverRef", "wins", "racesCount"]].to_csv("data/my_dataset.csv")
+print("DataFrame was saved into data/my_dataset.csv!")
 
 
 
@@ -126,7 +126,7 @@ model_nn.add(Dense(64, input_dim=1, activation="relu"))
 model_nn.add(Dense(32, activation="relu"))
 model_nn.add(Dense(1, activation="linear"))
 model_nn.compile(optimizer="adam", loss="mean_squared_error")
-model_nn.fit(x_train, y_train, epochs=1000)
+model_nn.fit(x_train, y_train, epochs=1000, verbose=0)
 
 x_nn = x_test
 y_nn = model_nn.predict(x_nn)
@@ -137,6 +137,7 @@ mse_nn = mean_squared_error(y_test, y_nn)
 rmse_nn = np.sqrt(mse_nn)
 r2_nn = r2_score(y_test, y_nn)
 
+print("==========================================================")
 print("Evaluate Neural Network:")
 print(f"Mean Absolute Error: {mae_nn}")
 print(f"Mean Squared Error: {mse_nn}")

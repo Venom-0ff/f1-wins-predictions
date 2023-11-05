@@ -27,21 +27,10 @@
     <Folder Include="data\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data\circuits.csv" />
-    <Content Include="data\constructors.csv" />
-    <Content Include="data\constructor_results.csv" />
-    <Content Include="data\constructor_standings.csv" />
     <Content Include="data\drivers.csv" />
     <Content Include="data\driver_standings.csv" />
-    <Content Include="data\lap_times.csv" />
     <Content Include="data\my_dataset.csv" />
-    <Content Include="data\pit_stops.csv" />
-    <Content Include="data\qualifying.csv" />
     <Content Include="data\races.csv" />
-    <Content Include="data\results.csv" />
-    <Content Include="data\seasons.csv" />
-    <Content Include="data\sprint_results.csv" />
-    <Content Include="data\status.csv" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
